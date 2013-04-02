@@ -61,7 +61,7 @@ let s:plugin_path = s:install_dir . "/jshint/"
 if has('win32')
   let s:plugin_path = substitute(s:plugin_path, '/', '\', 'g')
 endif
-let s:cmd = "cd " . s:plugin_path . " && node " . s:plugin_path . "runner.js"
+let s:cmd = "jshint"
 
 let s:jshintrc_file = expand('~/.jshintrc')
 if filereadable(s:jshintrc_file)
@@ -134,23 +134,20 @@ function! s:JSHint()
   let b:qf_list = []
   let b:qf_window_count = -1
 
-  let lines = join(s:jshintrc + getline(b:firstline, b:lastline), "\n")
-  if len(lines) == 0
+  let b:jshint_output = system(s:cmd . " " . @%)
+  if !v:shell_error
     return
-  endif
-
-  let b:jshint_output = system(s:cmd, lines . "\n")
-  if v:shell_error
+  elseif v:shell_error == 127
     echoerr 'could not invoke JSHint!'
     let b:jshint_disabled = 1
   end
 
   for error in split(b:jshint_output, "\n")
     " Match {line}:{char}:{message}
-    let b:parts = matchlist(error, '\v(\d+):(\d+):(.*)')
+    let b:parts = matchlist(error, '\v.*: line (\d+), col \d+, (.*)$')
     if !empty(b:parts)
-      let l:line = b:parts[1] + (b:firstline - 1 - len(s:jshintrc)) " Get line relative to selection
-      let l:errorMessage = b:parts[3]
+      let l:line = b:parts[1] + 0
+      let l:errorMessage = b:parts[2]
 
       " Store the error for an error under the cursor
       let s:matchDict = {}

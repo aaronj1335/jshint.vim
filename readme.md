@@ -1,7 +1,11 @@
 # jshint.vim
 
-A [jshint](https://github.com/jshint/jshint) flavor of [hallettj's
+A [jshint](https://github.com/jshint/jshint) flavor of [wookiehangover's
+version](https://github.com/wookiehangover/jshint.vim) of [hallettj's
 jslint.vim](https://github.com/hallettj/jslint.vim).
+
+The difference between this and @wookiehangover's version is this uses the
+`jshint(1)` command, and it assumes that it's installed in the user's `$PATH`.
 
 v0.9.0
 
