@@ -134,7 +134,9 @@ function! s:JSHint()
   let b:qf_list = []
   let b:qf_window_count = -1
 
-  let b:jshint_output = system(s:cmd . " " . @%)
+  silent write! /tmp/jshint_temp.js
+
+  let b:jshint_output = system(s:cmd . " /tmp/jshint_temp.js")
   if !v:shell_error
     return
   elseif v:shell_error == 127
